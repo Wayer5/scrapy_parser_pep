@@ -10,14 +10,14 @@ class PepSpider(scrapy.Spider):
     def parse(self, response):
         pep_links = response.css(
             'section[id="numerical-index"] table.pep-zero-table tbody tr'
-            )
+        )
 
         for link in pep_links:
             href = link.css('td:nth-child(2) a::attr(href)').get()
             number = self.extract_pep_number(href)
             yield response.follow(
                 href, self.parse_pep, meta={'number': number}
-                )
+            )
 
     def parse_pep(self, response):
         number = response.meta['number']
@@ -28,5 +28,4 @@ class PepSpider(scrapy.Spider):
         yield item
 
     def extract_pep_number(self, href):
-        # Пример href: 'pep-0001/'
         return href.split('-')[-1].rstrip('/')
