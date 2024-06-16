@@ -24,11 +24,24 @@ class PepParsePipeline:
 
         # Создание файла с результатами по статусам
         path = BASE_DIR / f'results/status_summary_{now}.csv'
+        # with open(path, mode='w', encoding='utf-8') as summary_file:
+        #     writer = csv.writer(summary_file)
+        #     writer.writerow(['Статус', 'Количество'])
+        #     total_count = 0
+        #     for status, count in self.status_count.items():
+        #         writer.writerow([status, count])
+        #         total_count += count
+        #     writer.writerow(['Total', total_count])
         with open(path, mode='w', encoding='utf-8') as summary_file:
             writer = csv.writer(summary_file)
             writer.writerow(['Статус', 'Количество'])
-            total_count = 0
-            for status, count in self.status_count.items():
-                writer.writerow([status, count])
-                total_count += count
+
+            # Подготовка данных для записи
+            rows = [
+                [status, count] for status, count in self.status_count.items()
+                ]
+            total_count = sum(self.status_count.values())
+
+            # Запись строк
+            writer.writerows(rows)
             writer.writerow(['Total', total_count])
